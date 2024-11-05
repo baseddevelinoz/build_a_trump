@@ -102,6 +102,7 @@
     <div class="buttons">
         <button id="downloadBtn">Download Image</button>
         <button id="randomBtn">Randomize</button>
+        <button id="buyNowBtn">Buy Now</button>
     </div>
 
     <script>
@@ -220,6 +221,11 @@
             document.getElementById('backgroundSelect').value = selectedBackground;
 
             drawCharacter();
+        });
+
+        // Buy Now button
+        document.getElementById('buyNowBtn').addEventListener('click', function() {
+            window.location.href = 'https://pump.fun/QgybaF14CGsCYAZFbA1AKnkPci3dSCEQnQyqTdNpump';
         });
 
         // Redraw the character whenever an image loads to ensure all layers are displayed
