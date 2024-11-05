@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Character Builder Game</title>
+    <style>
+        /* Import a pixelated font from Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+        body {
+            text-align: center;
+            font-family: 'Press Start 2P', cursive;
+            background-color: #1b1b1b;
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+        }
+        #characterCanvas {
+            border: 8px solid #ffffff;
+            margin-bottom: 20px;
+            image-rendering: pixelated;
+            width: 400px;
+            height: 400px;
+        }
+        .options {
+            margin-bottom: 20px;
+        }
+        select {
+            padding: 10px;
+            font-size: 16px;
+            font-family: 'Press Start 2P', cursive;
+            background-color: #333333;
+            color: #ffffff;
+            border: 2px solid #ffffff;
+            outline: none;
+            cursor: pointer;
+        }
+        select option {
+            background-color: #333333;
+            color: #ffffff;
+        }
+        .buttons {
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            font-family: 'Press Start 2P', cursive;
+            background-color: #333333;
+            color: #ffffff;
+            border: 2px solid #ffffff;
+            outline: none;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #555555;
+        }
+        h1, h2 {
+            font-family: 'Press Start 2P', cursive;
+        }
+    </style>
+</head>
+<body>
+    <h1>Build Your Pixel Trump</h1>
+
+    <!-- Display area for the character -->
+    <canvas id="characterCanvas" width="200" height="200"></canvas>
+
+    <!-- Options for eyewear -->
+    <div class="options">
+        <h2>Eyewear</h2>
+        <select id="eyewearSelect">
+            <option value="">None</option>
+            <option value="eyewear1">Eyewear 1</option>
+            <option value="eyewear2">Eyewear 2</option>
+            <option value="eyewear3">Eyewear 3</option>
+        </select>
+    </div>
+
+    <!-- Options for clothing -->
+    <div class="options">
+        <h2>Hats</h2>
+        <select id="clothingSelect">
+            <option value="">None</option>
+            <option value="hat1">Hat 1</option>
+            <option value="hat2">Hat 2</option>
+            <option value="hat3">Hat 3</option>
+        </select>
+    </div>
+
+    <!-- Options for background -->
+    <div class="options">
+        <h2>Background</h2>
+        <select id="backgroundSelect">
+            <option value="background1">Background 1</option>
+            <option value="background2">Background 2</option>
+            <option value="background3">Background 3</option>
+        </select>
+    </div>
+
+    <!-- Buttons -->
+    <div class="buttons">
+        <button id="downloadBtn">Download Image</button>
+        <button id="randomBtn">Randomize</button>
+    </div>
+
+    <script>
+        // Get the canvas and context
+        const canvas = document.getElementById('characterCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Scale up the canvas for pixelated effect
+        ctx.imageSmoothingEnabled = false;
+
+        // Image objects
+        const images = {
+            base: new Image(),
+            eyewear: {
+                'eyewear1': new Image(),
+                'eyewear2': new Image(),
+                'eyewear3': new Image(),
+            },
+            clothing: {
+                'hat1': new Image(),
+                'hat2': new Image(),
+                'hat3': new Image(),
+            },
+            background: {
+                'background1': new Image(),
+                'background2': new Image(),
+                'background3': new Image(),
+            },
+        };
+
+        // Set image sources (Local files in the root folder)
+        images.base.src = 'base_character.png';
+
+        images.eyewear['eyewear1'].src = 'eyewear1.png';
+        images.eyewear['eyewear2'].src = 'eyewear2.png';
+        images.eyewear['eyewear3'].src = 'eyewear3.png';
+
+        images.clothing['hat1'].src = 'hat1.png';
+        images.clothing['hat2'].src = 'hat2.png';
+        images.clothing['hat3'].src = 'hat3.png';
+
+        images.background['background1'].src = 'background1.jpg';
+        images.background['background2'].src = 'background2.jpg';
+        images.background['background3'].src = 'background3.jpg';
+
+        // Selected options
+        let selectedEyewear = '';
+        let selectedClothing = '';
+        let selectedBackground = 'background1';
+
+        // Function to draw the character
+        function drawCharacter() {
+            // Clear the canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw background
+            if (selectedBackground && images.background[selectedBackground].complete) {
+                ctx.drawImage(images.background[selectedBackground], 0, 0, canvas.width, canvas.height);
+            }
+
+            // Draw base character
+            if (images.base.complete) {
+                ctx.drawImage(images.base, 0, 0, canvas.width, canvas.height);
+            }
+
+            // Draw clothing
+            if (selectedClothing && images.clothing[selectedClothing].complete) {
+                ctx.drawImage(images.clothing[selectedClothing], 0, 0, canvas.width, canvas.height);
+            }
+
+            // Draw eyewear
+            if (selectedEyewear && images.eyewear[selectedEyewear].complete) {
+                ctx.drawImage(images.eyewear[selectedEyewear], 0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        // Event listeners for selections
+        document.getElementById('eyewearSelect').addEventListener('change', function() {
+            selectedEyewear = this.value;
+            drawCharacter();
+        });
+
+        document.getElementById('clothingSelect').addEventListener('change', function() {
+            selectedClothing = this.value;
+            drawCharacter();
+        });
+
+        document.getElementById('backgroundSelect').addEventListener('change', function() {
+            selectedBackground = this.value;
+            drawCharacter();
+        });
+
+        // Download image
+        document.getElementById('downloadBtn').addEventListener('click', function() {
+            const link = document.createElement('a');
+            link.download = 'character.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        });
+
+        // Randomize selections
+        document.getElementById('randomBtn').addEventListener('click', function() {
+            // Randomly select eyewear
+            const eyewearOptions = ['', 'eyewear1', 'eyewear2', 'eyewear3'];
+            selectedEyewear = eyewearOptions[Math.floor(Math.random() * eyewearOptions.length)];
+            document.getElementById('eyewearSelect').value = selectedEyewear;
+
+            // Randomly select clothing
+            const clothingOptions = ['', 'hat1', 'hat2', 'hat3'];
+            selectedClothing = clothingOptions[Math.floor(Math.random() * clothingOptions.length)];
+            document.getElementById('clothingSelect').value = selectedClothing;
+
+            // Randomly select background
+            const backgroundOptions = ['background1', 'background2', 'background3'];
+            selectedBackground = backgroundOptions[Math.floor(Math.random() * backgroundOptions.length)];
+            document.getElementById('backgroundSelect').value = selectedBackground;
+
+            drawCharacter();
+        });
+
+        // Redraw the character whenever an image loads to ensure all layers are displayed
+        Object.values(images).forEach(category => {
+            if (category instanceof Image) {
+                category.onload = drawCharacter;
+            } else {
+                Object.values(category).forEach(image => {
+                    image.onload = drawCharacter;
+                });
+            }
+        });
+
+        // Initial drawing after images have loaded
+        window.onload = function() {
+            drawCharacter();
+        };
+    </script>
+</body>
+</html>
